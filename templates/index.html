@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detector de Emociones</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="contenedor">
+
+    <div class="camara-box">
+        <h2>Cámara</h2>
+
+        <video id="video" autoplay></video>
+
+        <button id="capture-btn">Tomar Foto</button>
+
+        <form id="cam-form" action="/predict" method="POST">
+            <input type="hidden" name="cam_image" id="cam_image">
+        </form>
+    </div>
+    <div class="camara-box">
+        <h1>Detector de Emociones</h1>
+        {% if img_path %}
+            <img src="{{ img_path }}" width="250">
+        {% endif %}
+
+        {% if prediction %}
+            <h3>Predicción: {{ prediction }}</h3>
+        {% endif %}
+    </div>
+
+    <div class="upload-box">
+        <h2>Subir Imagen</h2>
+        <form action="/predict" method="POST" enctype="multipart/form-data"><br>
+            <input type="file" name="file" class="form-control"><br><br>
+            <button type="submit">Analizar Imagen</button>
+        </form>
+    </div>
+
+</div>
+
+<script>
+    const video = document.getElementById("video");
+    const captureBtn = document.getElementById("capture-btn");
+    const camImageInput = document.getElementById("cam_image");
+
+    navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+        video.srcObject = stream;
+    });
+
+    captureBtn.addEventListener("click", () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext("2d").drawImage(video, 0, 0);
+
+        const imgData = canvas.toDataURL("image/jpeg");
+        camImageInput.value = imgData;
+
+        document.getElementById("cam-form").submit();
+    });
+
+</script>
+
+</body>
+</html>
