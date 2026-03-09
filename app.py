@@ -1,3 +1,5 @@
+#antes de ejecutar el codigo asegurase de entrar al carpeta del proyecto
+#instalar las dependencias necesarias 
 from flask import Flask, render_template, request
 import cv2
 import numpy as np
